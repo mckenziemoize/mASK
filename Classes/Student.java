@@ -1,4 +1,4 @@
-import java.sql.SQLException;
+package mASK;
 
 /**
  * The class for a Student. The Students will be able to see a list of Questions
@@ -8,50 +8,28 @@ import java.sql.SQLException;
  * @author Mckenzie Moize
  */
 class Student extends Person {
+    // <editor-fold desc="Data Fields">
     /**
      * Whether or not the Student is muted
      */
-    private boolean isMuted;
+    protected boolean isMuted;
+    // </editor-fold>
     
+    // <editor-fold desc="Constructors">
     /**
      * Constructor for Student class
      * 
      * @param name the real name of the Student
      * @param id the username of the Student
      */
-    public Student(String name, String id) {
+    public Student(String name, String id, int sessionID) {
         super(name, id); // Call the constructor of the superclass
-    }
-    
-    /**
-     * Attempt to connect to the desired Session
-     * 
-     * @param session the Session that is trying to be connected to
-     * @return whether or not connection was successful
-     */
-    public boolean connect(int sessionID) {
-        // Assign the new Session to the current Session
-        this.session = session;
         
-        try {
-            // Add this Student to the list of Students in the current Session
-            this.session.addUser(this, false);
-        } catch (SQLException ex) {
-            System.out.println("Failed to add user." + ex);
-        }
-        
-        return true;
+        session = new Session(sessionID);
     }
+    // </editor-fold>
     
-    /**
-     * Ask a question
-     * 
-     * @param question the question being asked
-     */
-    public void askQuestion(String question) {
-        
-    }
-    
+    // <editor-fold desc="Methods">
     /**
      * Answer a short answer question from the Professor or a question asked by
      * another student
@@ -60,7 +38,7 @@ class Student extends Person {
      * @param answer the answer for the question
      */
     public void answerQuestion(Question question, String answer) {
-        
+        question.answer(this, answer);
     }
     
     /**
@@ -70,8 +48,18 @@ class Student extends Person {
      * @param answer the index of the answer choice selected
      * @return whether or not you are correct
      */
-    public boolean answerQuestion(Question question, int answer) {
+    public boolean answerQuestion(Question question, int answerChoice) {
         // TODO: Ability to answer question
-        return false;
+        return question.answer(this, answerChoice);
     }
+    
+    /**
+     * Ask a question
+     * 
+     * @param question the question being asked
+     */
+    public void askQuestion(String question) {
+        session.addQuestion(new Question(this, question));
+    }
+    // </editor-fold>
 }

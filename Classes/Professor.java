@@ -1,3 +1,6 @@
+package mASK;
+
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -8,20 +11,54 @@ import java.util.List;
  * @author Mckenzie Moize
  */
 class Professor extends Person {
+    // <editor-fold desc="Constructors">
     /**
      * Constructor for Professor class
      * 
      * @param name the real name of the Professor
      * @param id the username of the Professor
      */
-    public Professor(String name, String id) {
+    public Professor(String name, String id, int capacity) {
         super(name, id); // Call the constructor from the superclass
-        
-        // Add to the database
-        String query = "insert into USERS (username, name, is_host) values "
-                + "('" + ID + "', '" + NAME + "', " + 1 + ")";
+
+        try {
+            session = new Session(capacity, this);
+        } catch (SQLException ex) {
+            System.out.println("Failed to create Session: " + ex);
+        }
     }
     
+    /**
+     * Constructor for Professor to connect to an existing Session
+     * 
+     * @param session The Session being connected to
+     * @param name The real name of the Professor
+     * @param id The username for the Professor
+     */
+    public Professor(Session session, String name, String id) {
+        super(name, id);
+        
+        this.session = session;
+    }
+    // </editor-fold>
+    
+    // <editor-fold desc="Getters">
+    /**
+     * @return the attendance for the current Session
+     */
+    public List<Student> getAttendance() {
+        return session.getStudents();
+    }
+    
+    /**
+     * @return the next most important Question from the Session
+     */
+    public Question getNextQuestion() {
+        return session.next();
+    }
+    // </editor-fold>
+    
+    // <editor-fold desc="Methods">
     /**
      * Ask a short answer question.
      * 
@@ -29,7 +66,7 @@ class Professor extends Person {
      * @param timeLimit the time the question will be able to be answered
      */
     public void askQuestion(String question, int timeLimit) {
-        
+        session.addQuestion(new Question(this, question, timeLimit));
     }
     
     /**
@@ -40,8 +77,10 @@ class Professor extends Person {
      * @param answersChoices the list of answer choices
      * @param correctAnswer the index of the correct answer
      */
-    public void askQuestion(String question, int timeLimit, List<Answer> answersChoices, int correctAnswer) {
-        
+    public void askQuestion(String question, int timeLimit, 
+            List<Answer> answers, int correctAnswer) {
+        session.addQuestion(new Question(this, question, timeLimit, 
+                answers, correctAnswer));
     }
     
     /**
@@ -63,20 +102,7 @@ class Professor extends Person {
      * @param student the Student being muted
      */
     public void muteStudent(Student student) {
-        
+        student.isMuted = true;
     }
-    
-    /**
-     * @return the next most important Question from the Session
-     */
-    public Question getNextQuestion() {
-        return session.next();
-    }
-    
-    /**
-     * @return the attendance for the current Session
-     */
-    public List<Student> getAttendance() {
-        return session.getStudents();
-    }
+    // </editor-fold>
 }

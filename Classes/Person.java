@@ -1,24 +1,29 @@
+package mASK;
+
 /**
  * Superclass for both Student and Professor
  * 
  * @author Mckenzie Moize
  */
 abstract class Person {
-    /**
-     * The real name of the Person
-     */
-    protected final String NAME;
-    
+    // <editor-fold desc="Data Fields">
     /**
      * The desired username of the Person
      */
     protected final String ID;
     
     /**
+     * The real name of the Person
+     */
+    protected final String NAME;
+    
+    /**
      * The session the Person is currently connected to
      */
     protected Session session;
+    // </editor-fold>
     
+    // <editor-fold desc="Constructors">
     /**
      * The constructor for a Person
      * 
@@ -29,14 +34,9 @@ abstract class Person {
         NAME = name; 
         ID = id;
     }
+    // </editor-fold>
 
-    /**
-     * @return the name of the Person
-     */
-    public String getName() {
-        return NAME;
-    }
-
+    // <editor-fold desc="Getters">
     /**
      * @return the username of the Person
      */
@@ -45,9 +45,10 @@ abstract class Person {
     }
 
     /**
-     * @return the Session the Person is connected to
+     * @return the name of the Person
      */
-    public Session getSession() {
-        return session;
+    public String getName() {
+        return NAME;
     }
+    // </editor-fold>
 }
